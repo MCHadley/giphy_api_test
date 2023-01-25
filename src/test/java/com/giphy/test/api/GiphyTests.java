@@ -206,4 +206,67 @@ public class GiphyTests {
         then().
                 statusCode(204);
     }
+
+    @Test
+    public void getTrendingStickers(){
+        given().
+                param("api_key", API_KEY).
+        when().
+                get(trendingStickerUrl).
+        then().
+                statusCode(200)
+                .body("meta.msg", equalTo("OK"));
+    }
+
+    @Test
+    public void getTrendingStickersNoApiKey(){
+        when().
+                get(trendingStickerUrl).
+        then().
+                statusCode(401)
+                .body("meta.msg", equalTo("No API key found in request."));
+    }
+
+    @Test
+    public void getTrendingStickersBadApiKey(){
+        given().
+                param("api_key", BAD_API_KEY).
+        when().
+                get(trendingStickerUrl).
+        then().
+                statusCode(401)
+                .body("meta.msg", equalTo("Unauthorized"));
+    }
+
+    @Test
+    public void postTrendingStickers(){
+        given().
+                param("api_key", API_KEY).
+        when().
+                post(trendingStickerUrl).
+        then().
+                statusCode(404)
+                .body("meta.msg", equalTo("Not Found!"));
+    }
+
+    @Test
+    public void deleteTrendingStickers(){
+        given().
+                param("api_key", API_KEY).
+        when().
+                delete(trendingStickerUrl).
+        then().
+                statusCode(404)
+                .body("meta.msg", equalTo("Not Found!"));
+    }
+
+    @Test
+    public void optionsTrendingStickers(){
+        given().
+                param("api_key", API_KEY).
+        when().
+                options(trendingStickerUrl).
+        then().
+                statusCode(204);
+    }
 }
