@@ -71,9 +71,9 @@ public class GiphyTests {
                 get("http://api.giphy.com/v1/stickers/search").
         then().
                 statusCode(200)
-                .body("data.type", equalTo("sticker"))
-                .body("data.id", is("3ohzdJKvFq7VYRhKhy"))
-                .body("data.rating", is("g"))
+                .body("data[0].type", equalTo("sticker"))
+                .body("data[0].id", is("3ohzdJKvFq7VYRhKhy"))
+                .body("data[0].rating", is("g"))
                 .body("meta.msg", is("OK"));
     }
 
@@ -107,6 +107,27 @@ public class GiphyTests {
                 statusCode(200)
                 .body("pagination.total_count", equalTo(0))
                 .body("meta.msg", is("OK"));
+    }
+
+    @Test
+    public void postStickerSearch(){
+        given().
+                param("api_key", API_KEY).
+        when().
+                post("http://api.giphy.com/v1/stickers/search").
+        then().
+                statusCode(404)
+                .body("meta.msg", is("Not Found!"));
+    }
+
+    @Test
+    public void getStickerSearch(){
+        given().
+                param("api_key", API_KEY).
+        when().
+                options("http://api.giphy.com/v1/stickers/search").
+        then().
+                statusCode(204);
     }
 
 }
