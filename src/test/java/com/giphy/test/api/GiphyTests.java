@@ -130,4 +130,15 @@ public class GiphyTests {
                 statusCode(204);
     }
 
+    @Test
+    public void deleteStickerSearch(){
+        given().
+                param("api_key", API_KEY).
+        when().
+                delete("http://api.giphy.com/v1/stickers/search").
+        then().
+                statusCode(404)
+                .body("meta.msg", equalTo("Not Found!"));
+    }
+
 }
