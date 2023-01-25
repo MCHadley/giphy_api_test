@@ -16,6 +16,7 @@ public class GiphyTests {
 
     private static final String API_KEY = "YbclLj2GOvCpPKYbqZibbM8N14BoufIt";
     private static final String BAD_API_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+    private static final String searchEndpoint = "http://api.giphy.com/v1/stickers/search";
 
     //GIF Tests
     @Test
@@ -68,7 +69,7 @@ public class GiphyTests {
         given().
                 param("api_key", API_KEY).param("q", "baseball").param("limit", 1).
         when().
-                get("http://api.giphy.com/v1/stickers/search").
+                get(searchEndpoint).
         then().
                 statusCode(200)
                 .body("data[0].type", equalTo("sticker"))
@@ -80,7 +81,7 @@ public class GiphyTests {
     @Test
     public void getSearchStickerNoApiKey(){
         when()
-                .get("http://api.giphy.com/v1/stickers/search").
+                .get(searchEndpoint).
         then().
                 statusCode(401)
                 .body("meta.msg", equalTo("No API key found in request."));
@@ -91,7 +92,7 @@ public class GiphyTests {
         given().
                 param("api_key", BAD_API_KEY).
         when().
-                get("http://api.giphy.com/v1/stickers/search").
+                get(searchEndpoint).
         then().
                 statusCode(401)
                 .body("meta.msg", equalTo("Unauthorized"));
@@ -102,7 +103,7 @@ public class GiphyTests {
         given().
                 param("api_key", API_KEY).
         when().
-                get("http://api.giphy.com/v1/stickers/search").
+                get(searchEndpoint).
         then().
                 statusCode(200)
                 .body("pagination.total_count", equalTo(0))
@@ -114,7 +115,7 @@ public class GiphyTests {
         given().
                 param("api_key", API_KEY).
         when().
-                post("http://api.giphy.com/v1/stickers/search").
+                post(searchEndpoint).
         then().
                 statusCode(404)
                 .body("meta.msg", is("Not Found!"));
@@ -125,7 +126,7 @@ public class GiphyTests {
         given().
                 param("api_key", API_KEY).
         when().
-                options("http://api.giphy.com/v1/stickers/search").
+                options(searchEndpoint).
         then().
                 statusCode(204);
     }
@@ -135,7 +136,7 @@ public class GiphyTests {
         given().
                 param("api_key", API_KEY).
         when().
-                delete("http://api.giphy.com/v1/stickers/search").
+                delete(searchEndpoint).
         then().
                 statusCode(404)
                 .body("meta.msg", equalTo("Not Found!"));
