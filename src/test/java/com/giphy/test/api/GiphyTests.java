@@ -69,7 +69,9 @@ public class GiphyTests {
     @Test
     public void getSearchStickerEndpoint(){
         given().
-                param("api_key", API_KEY).param("q", "baseball").param("limit", 1).
+                param("api_key", API_KEY).
+                param("q", "baseball").
+                param("limit", 1).
         when().
                 get(searchEndpoint).
         then().
@@ -78,6 +80,18 @@ public class GiphyTests {
                 .body("data[0].id", is("3ohzdJKvFq7VYRhKhy"))
                 .body("data[0].rating", is("g"))
                 .body("meta.msg", is("OK"));
+    }
+
+    @Test
+    public void getSearchStickerEndpointTooLongQuery(){
+        given().
+                param("api_key", API_KEY).
+                param("q", "thequickbrownfoxjumpedoverthelazydogtylermichaelone").
+        when().
+                get(searchEndpoint).
+        then().
+                statusCode(414)
+                .body("meta.msg", equalTo("Query Too Long"));
     }
 
     @Test
