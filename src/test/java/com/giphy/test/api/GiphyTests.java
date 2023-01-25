@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.*;
 @SpringBootTest
 public class GiphyTests {
 
-    private static final String API_KEY = "YOUR API KEY GOES HERE";
+    private static final String API_KEY = "YbclLj2GOvCpPKYbqZibbM8N14BoufIt";
     private static final String BAD_API_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
     //GIF Tests
@@ -38,7 +38,7 @@ public class GiphyTests {
                 get("http://api.giphy.com/v1/gifs/zdIGTIdD1mi4").
         then().
                 statusCode(401)
-                .body("message", equalTo("No API key found in request"));
+                .body("meta.msg", equalTo("No API key found in request."));
     }
 
     @Test
@@ -48,8 +48,8 @@ public class GiphyTests {
         when().
                 get("http://api.giphy.com/v1/gifs/zdIGTIdD1mi4").
         then().
-                statusCode(403)
-                .body("message", equalTo("Invalid authentication credentials"));
+                statusCode(401)
+                .body("meta.msg", equalTo("Unauthorized"));
     }
 
     @Test
@@ -63,7 +63,50 @@ public class GiphyTests {
                 .body("meta.msg", equalTo("Not Found"));
     }
 
-    //TODO
-    //Sticker Search test code goes here
+    @Test
+    public void getSearchStickerEndpoint(){
+        given().
+                param("api_key", API_KEY).param("q", "baseball").param("limit", 1).
+        when().
+                get("http://api.giphy.com/v1/stickers/search").
+        then().
+                statusCode(200)
+                .body("data.type", equalTo("sticker"))
+                .body("data.id", is("3ohzdJKvFq7VYRhKhy"))
+                .body("data.rating", is("g"))
+                .body("meta.msg", is("OK"));
+    }
+
+    @Test
+    public void getSearchStickerNoApiKey(){
+        when()
+                .get("http://api.giphy.com/v1/stickers/search").
+        then().
+                statusCode(401)
+                .body("meta.msg", equalTo("No API key found in request."));
+    }
+
+    @Test
+    public void getSearchStickerBadApiKey(){
+        given().
+                param("api_key", BAD_API_KEY).
+        when().
+                get("http://api.giphy.com/v1/stickers/search").
+        then().
+                statusCode(401)
+                .body("meta.msg", equalTo("Unauthorized"));
+    }
+
+    @Test
+    public void getSearchStickerByNoResults(){
+        given().
+                param("api_key", API_KEY).
+        when().
+                get("http://api.giphy.com/v1/stickers/search").
+        then().
+                statusCode(200)
+                .body("pagination.total_count", equalTo(0))
+                .body("meta.msg", is("OK"));
+    }
 
 }
